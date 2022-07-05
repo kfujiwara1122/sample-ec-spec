@@ -1,0 +1,92 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "generate all codes",
+            "group": {
+                "kind": "build",
+                // "isDefault": true,
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "generate fastapi codes",
+                "generate axios codes"
+            ]
+        },
+        {   
+            "type": "shell",
+            "label": "generate fastapi codes",
+            "group": {
+                "kind": "build",
+            },
+            "command": "docker",
+            "args": [
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}/out:/local",
+                "-v",
+                "${workspaceFolder}/openapi.yml:/tmp/openapi.yml",
+                "openapitools/openapi-generator-cli",
+                "generate",
+                "-i",
+                "/tmp/openapi.yml",
+                "-g",
+                "python-fastapi",
+                "-o",
+                "/local/fastapi"
+            ],
+        },
+        {
+            "type": "shell",
+            "label": "generate axios codes",
+            "group": {
+                "kind": "build",
+            },
+            "command": "docker",
+            "args": [
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}/out:/local",
+                "-v",
+                "${workspaceFolder}/openapi.yml:/tmp/openapi.yml",
+                "openapitools/openapi-generator-cli",
+                "generate",
+                "-i",
+                "/tmp/openapi.yml",
+                "-g",
+                "typescript-axios",
+                "-o",
+                "/local/axios"
+            ],
+        },
+        {
+            "type": "shell",
+            "label": "generate mysql schemas",
+            "group": {
+                "kind": "build",
+            },
+            "command": "docker",
+            "args": [
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}/out:/local",
+                "-v",
+                "${workspaceFolder}/openapi.yml:/tmp/openapi.yml",
+                "openapitools/openapi-generator-cli",
+                "generate",
+                "-i",
+                "/tmp/openapi.yml",
+                "-g",
+                "mysql-schema",
+                "-o",
+                "/local/mysql"
+            ],
+        },
+    ]
+}
